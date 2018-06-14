@@ -69,6 +69,7 @@ namespace SpringHeroBanking.entity
             return result;
         }
 
+       
         public string TradingAcountNumber1()
         {
             string result = "";

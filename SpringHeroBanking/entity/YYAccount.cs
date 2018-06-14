@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 
 namespace SpringHeroBanking.entity
 {
@@ -7,6 +8,7 @@ namespace SpringHeroBanking.entity
         private string _accountNumber;
         private string _userName;
         private string _password;
+        private string _salt;
         private decimal _balance;
         private string _identityCard;
         private string _fullName;
@@ -21,12 +23,72 @@ namespace SpringHeroBanking.entity
 
         public YYAccount()
         {
+           
         }
 
-        public YYAccount(string accountNumber, string userName, string password, decimal balance, string identityCard,
-            string fullName, string email, string phoneNumber, string address, string dob, int gender, int status)
+//        public Boolean CheckEncryptedPassWord(string password)
+//        {
+//            var checkPassword = EncryptString(password, _salt);
+//            return checkPassword == _password;
+//        }
+
+        public void EncryptString()
         {
-            _accountNumber = accountNumber;
+            if (string.IsNullOrEmpty(_password))
+            {
+                throw new ArgumentException("Password is null or empyt");
+            }
+            
+            var str_md5 = "";
+            
+            byte[] byteArrayPasswordSalt = System.Text.Encoding.UTF8.GetBytes(_password + _salt);
+            MD5CryptoServiceProvider md5CryptoServiceProvider = new MD5CryptoServiceProvider();
+            byteArrayPasswordSalt = md5CryptoServiceProvider.ComputeHash(byteArrayPasswordSalt);
+            foreach (var b in byteArrayPasswordSalt)
+            {
+                str_md5 += b.ToString("X2");
+            }
+
+            _password = str_md5;
+        }
+        
+        public string EncryptLoginPass(String password, String salt)
+        {
+            var str_md5 = "";
+            
+            byte[] byteArrayPasswordSalt = System.Text.Encoding.UTF8.GetBytes(password + salt);
+            MD5CryptoServiceProvider md5CryptoServiceProvider = new MD5CryptoServiceProvider();
+            byteArrayPasswordSalt = md5CryptoServiceProvider.ComputeHash(byteArrayPasswordSalt);
+            foreach (var b in byteArrayPasswordSalt)
+            {
+                str_md5 += b.ToString("X2");
+            }
+            return str_md5;
+        }
+
+//        public void EncryPassword()
+//        {
+//            if (string.IsNullOrEmpty(_password))
+//            {
+//                throw new ArgumentException("Password is null or empyt");
+//            }
+//
+//            _password = EncryptString();
+//        }
+
+//        private void GennerateAccountNumber()
+//        {
+//            _accountNumber = Int32.Parse(Guid.NewGuid().ToString());
+//        }
+
+        private void GenerateSalt()
+        {
+            _salt = Guid.NewGuid().ToString().Substring(0, 7);
+        }
+
+        public YYAccount(string userName, string password, decimal balance, string identityCard, string fullName,
+            string email, string phoneNumber, string address, string dob, int gender, int status)
+        {
             _userName = userName;
             _password = password;
             _balance = balance;
@@ -38,6 +100,14 @@ namespace SpringHeroBanking.entity
             _dob = dob;
             _gender = gender;
             _status = status;
+            _accountNumber = Guid.NewGuid().ToString();
+            _salt = Guid.NewGuid().ToString().Substring(0, 7);
+        }
+
+        public string Salt
+        {
+            get => _salt;
+            set => _salt = value;
         }
 
         public string AccountNumber

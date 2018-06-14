@@ -14,11 +14,13 @@ namespace SpringHeroBanking.controller
 
         public void Login()
         {
-            Console.WriteLine("Please enter Acount number: ");
+            Console.WriteLine("Please enter Acount Number: ");
             string anumber = Console.ReadLine();
             Console.WriteLine("Please enter password: ");
             string pword = Console.ReadLine();
-            var acount = _model.GetByLogin(anumber, pword);
+            YYAccount yy = new YYAccount();
+            var getPass = _model.GetByAccountNumber(anumber);
+            var acount = _model.GetByLogin(anumber, yy.EncryptLoginPass(pword, getPass.Salt));
             if (acount == null)
             {
                 Console.WriteLine("Username or password false!");
@@ -131,46 +133,54 @@ namespace SpringHeroBanking.controller
             }
         }
         
-        public YYAccount Account()
+        public void Account()
         {
-            var ac = new YYAccount();
-            Console.WriteLine("Please enter Account Number: ");
-            ac.AccountNumber = Console.ReadLine();
-
+            
             Console.WriteLine("Please enter User Name: ");
-            ac.UserName = Console.ReadLine();
+            string userName = Console.ReadLine();
 
-            if (_model.CheckExistUserName(ac.UserName))
+            if (_model.CheckExistUserName(userName))
             {
                 Console.WriteLine("Duplicate user name.");
             }
             else
             {
                 Console.WriteLine("Please enter password: ");
-                ac.Password = Console.ReadLine();
+                string password = Console.ReadLine();
                 Console.WriteLine("Please enter balance: ");
-                ac.Balance = Decimal.Parse(Console.ReadLine());
+                decimal balance = Decimal.Parse(Console.ReadLine());
                 Console.WriteLine("Please enter identity card: ");
-                ac.IdentityCard = Console.ReadLine();
+                string identityCard = Console.ReadLine();
                 Console.WriteLine("Please enter full name: ");
-                ac.FullName = Console.ReadLine();
+                string fullName = Console.ReadLine();
                 Console.WriteLine("Please enter email: ");
-                ac.Email = Console.ReadLine();
+                string email = Console.ReadLine();
                 Console.WriteLine("Please enter phone number: ");
-                ac.PhoneNumber = Console.ReadLine();
+                string phoneNumber = Console.ReadLine();
                 Console.WriteLine("Please enter address: ");
-                ac.Address = Console.ReadLine();
+                string address = Console.ReadLine();
                 Console.WriteLine("Please enter date of birth(Yeah-month-day -)");
-                ac.Dob = Console.ReadLine();
+                string dob = Console.ReadLine();
                 Console.WriteLine("Please enter gender: ");
-                ac.Gender = Int32.Parse(Console.ReadLine());
+                int gender = Int32.Parse(Console.ReadLine());
                 Console.WriteLine("Please enter status: ");
-                ac.Status = Int32.Parse(Console.ReadLine());
-                return ac;
+                int status = Int32.Parse(Console.ReadLine());
+                Console.WriteLine("Register succses");
+                YYAccount ac1 = new YYAccount(userName,password,balance,identityCard,fullName,email,phoneNumber,address,dob,gender,status);
+                Console.WriteLine(ac1.AccountNumber);
+                ac1.EncryptString();
+                
+                
+                try
+                {
+                    _model.Save(ac1);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
-
-
-            return null;
         }
         
         public void DepositBalance(String anumber)
@@ -251,6 +261,7 @@ namespace SpringHeroBanking.controller
                         string name1 = cacount.UserName;
                         string contentusername = "Change username from " + name1 + " to " + cusername;
                         _change.InsertChange(anumber,contentusername);
+                        Console.WriteLine("Change username success");
                         break;
                     case 2:
                         Console.WriteLine("You choice change password.");
@@ -260,6 +271,7 @@ namespace SpringHeroBanking.controller
                         string password1 = cacount.Password;
                         string contentpassword = "Change password from " + password1 + " to " + cpassword;
                         _change.InsertChange(anumber,contentpassword);
+                        Console.WriteLine("Change password success");
                         break;
                     case 3:
                         Console.WriteLine("You choice change identity card.");
@@ -269,6 +281,7 @@ namespace SpringHeroBanking.controller
                         string card1 = cacount.IdentityCard;
                         string contentcard = "Change identity card from " + card1 + " to " + cidentitycard;
                         _change.InsertChange(anumber,contentcard);
+                        Console.WriteLine("Change identity card success");
                         break;
                     case 4:
                         Console.WriteLine("You choice change full name.");
@@ -278,6 +291,7 @@ namespace SpringHeroBanking.controller
                         string fullname1 = cacount.FullName;
                         string contentfullname = "Change full name from " + fullname1 + " to " + cfullname;
                         _change.InsertChange(anumber,contentfullname);
+                        Console.WriteLine("Change full name success");
                         break;
                     case 5:
                         Console.WriteLine("You choice change email.");
@@ -287,6 +301,7 @@ namespace SpringHeroBanking.controller
                         string email1 = cacount.Email;
                         string contentemail = "Change email from " + email1 + " to " + cemail;
                         _change.InsertChange(anumber,contentemail);
+                        Console.WriteLine("Change email success");
                         break;
                     case 6:
                         Console.WriteLine("You choice change phone number.");
@@ -296,6 +311,7 @@ namespace SpringHeroBanking.controller
                         string phonenumber = cacount.PhoneNumber;
                         string contentphonenumber = "Change phone number from " + phonenumber + " to " + cphonenumber;
                         _change.InsertChange(anumber,contentphonenumber);
+                        Console.WriteLine("Change phone number success");
                         break;
                     case 7:
                         Console.WriteLine("You choice change address.");
@@ -305,6 +321,7 @@ namespace SpringHeroBanking.controller
                         string address1 = cacount.Address;
                         string contentaddress = "Change address from " + address1 + " to " + caddress;
                         _change.InsertChange(anumber,contentaddress);
+                        Console.WriteLine("Change address success");
                         break;
                     case 8:
                         Console.WriteLine("You choice change dob.");
@@ -314,6 +331,7 @@ namespace SpringHeroBanking.controller
                         string dob1 = cacount.Dob;
                         string contentdob = "Change dob from " + dob1 + " to " + cdob;
                         _change.InsertChange(anumber,contentdob);
+                        Console.WriteLine("Change dob success");
                         break;
                     case 9:
                         Console.WriteLine("You choice change gender.");
@@ -323,6 +341,7 @@ namespace SpringHeroBanking.controller
                         int gender1 = cacount.Gender;
                         string contentgender = "Change gender from " + gender1 + " to " + cgender;
                         _change.InsertChange(anumber,contentgender);
+                        Console.WriteLine("Change gender success");
                         break;
                     case 10:
                         Console.WriteLine("You choice Lock account.");
@@ -362,7 +381,7 @@ namespace SpringHeroBanking.controller
             Console.WriteLine("Please enter receiver account number");
             tr.ReceiverAccountNumber = Console.ReadLine();
             var checkAc = _model.GetByAccountNumber(tr.ReceiverAccountNumber);
-            string rac = checkAc.AccountNumber;
+            String rac = checkAc.AccountNumber;
             if (rac.Equals(tr.ReceiverAccountNumber))
             {
                 Console.WriteLine("Please enter type: ");

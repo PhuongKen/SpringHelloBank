@@ -8,6 +8,8 @@ namespace SpringHeroBanking.model
     public class YYChangeHistoryModel
     {
         List<YYChangeHistory> _list = new List<YYChangeHistory>();
+        
+        // Thêm vào lịch sử thay đổi.//////
         public void InsertChange(String accountNumber, String content)
         {
             DbConnection.Instance().OpenConnection();
@@ -19,6 +21,7 @@ namespace SpringHeroBanking.model
             DbConnection.Instance().CloseConnection();
         }
 
+        // Lấy về lịch sử thay đổi.
         public List<YYChangeHistory> queryChange(String accountNumber)
         {
             DbConnection.Instance().OpenConnection();

@@ -36,7 +36,7 @@ namespace SpringHeroBanking
                         break;
                     case 2:
                         Console.WriteLine("You choice Register");
-                        _model.Save(_acc.Account());
+                        _acc.Account();
                         break;
                     case 3:
                         Console.WriteLine("Exit. Bye Bye");

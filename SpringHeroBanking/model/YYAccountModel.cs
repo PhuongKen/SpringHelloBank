@@ -7,19 +7,19 @@ namespace SpringHeroBanking.model
 {
     public class YYAccountModel
     {
-
         public Boolean Save(YYAccount ac)
         {
             DbConnection.Instance().OpenConnection();
-            string query = ("insert into account" +
-                            "(accountNumber,userName,password,balance,identityCard,fullName,email,phoneNumber,address," +
+            string query = ("insert into `account`" +
+                            "(accountNumber,userName,password,salt,balance,identityCard,fullName,email,phoneNumber,address," +
                             "dob,gender,status) values" +
-                            "(@accountNumber,@userName,@password,@balance,@identityCard,@fullName,@email,@phoneNumber,@address," +
+                            "(@accountNumber,@userName,@password,@salt,@balance,@identityCard,@fullName,@email,@phoneNumber,@address," +
                             "@dob,@gender,@status)");
             MySqlCommand cmd = new MySqlCommand(query, DbConnection.Instance().Connection);
             cmd.Parameters.AddWithValue("@accountNumber", ac.AccountNumber);
             cmd.Parameters.AddWithValue("@userName", ac.UserName);
             cmd.Parameters.AddWithValue("@password", ac.Password);
+            cmd.Parameters.AddWithValue("@salt", ac.Salt);
             cmd.Parameters.AddWithValue("@balance", ac.Balance);
             cmd.Parameters.AddWithValue("@identityCard", ac.IdentityCard);
             cmd.Parameters.AddWithValue("@fullName", ac.FullName);
@@ -58,6 +58,7 @@ namespace SpringHeroBanking.model
                 YYAccount ac = new YYAccount();
                 ac.AccountNumber = reader.GetString(reader.GetOrdinal("accountNumber"));
                 ac.UserName = reader.GetString(reader.GetOrdinal("userName"));
+                ac.Salt = reader.GetString(reader.GetOrdinal("salt"));
                 ac.Balance = reader.GetDecimal(reader.GetOrdinal("balance"));
                 ac.IdentityCard = reader.GetString(reader.GetOrdinal("identityCard"));
                 ac.FullName = reader.GetString(reader.GetOrdinal("fullName"));
@@ -86,6 +87,7 @@ namespace SpringHeroBanking.model
                 YYAccount ac = new YYAccount();
                 String anumber = reader.GetString("accountNumber");
                 String pword = reader.GetString("password");
+                String salt = reader.GetString("salt");
                 return ac;
             }
             DbConnection.Instance().CloseConnection();

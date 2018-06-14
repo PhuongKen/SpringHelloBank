@@ -6,6 +6,7 @@ namespace SpringHeroBanking.model
 {
     public class YYTransactionModel
     {
+        // Giao dịch với 
         public Boolean SaveTransaction(YYTransaction tr)
         {
             DbConnection.Instance().OpenConnection();
@@ -23,6 +24,5 @@ namespace SpringHeroBanking.model
             DbConnection.Instance().CloseConnection();
             return true;
         }
-        
     }
 }

@@ -8,7 +8,7 @@ namespace SpringHeroBanking.model
 {
     public class YYTransactionHistoryModel
     {
-        
+        // Thêm vào lịch sử giáo dịch
         public Boolean HinsertBalance(YYTransactionHistory h)
         {
             DbConnection.Instance().OpenConnection();
@@ -24,6 +24,7 @@ namespace SpringHeroBanking.model
             return true;
         }
 
+        // Lấy về l
         public List<YYTransactionHistory> queryHistory(String anumber)
         {
             List<YYTransactionHistory> list = new List<YYTransactionHistory>();
